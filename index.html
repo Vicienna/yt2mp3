@@ -1,15 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>YouTube to MP3/MP4</title>
+  <meta charset="UTF-8" />
+  <title>YouTube to MP3 Converter</title>
   <style>
-    body { font-family: sans-serif; text-align: center; margin-top: 50px; }
-    input, select, button { padding: 10px; margin: 10px; width: 300px; }
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 50px;
+    }
+    input, select, button {
+      padding: 10px;
+      margin: 10px;
+      width: 300px;
+    }
   </style>
 </head>
 <body>
-  <h1>YT to MP3 / MP4 Converter</h1>
+  <h1>YouTube to MP3 / MP4</h1>
   <input type="text" id="yt-url" placeholder="Paste YouTube URL here" />
   <select id="format">
     <option value="mp3">MP3 (Audio)</option>
@@ -17,38 +25,37 @@
   </select>
   <br />
   <button onclick="convert()">Convert</button>
-  <div id="result" style="margin-top:20px;"></div>
+  <div id="result" style="margin-top: 20px;"></div>
 
   <script>
-    async function convert() {
-      const url = document.getElementById('yt-url').value;
-      const format = document.getElementById('format').value;
-      const apiUrl = `https://youtube-mp36.p.rapidapi.com/dl?id=${extractID(url)}`;
-
-      document.getElementById('result').innerHTML = "Converting...";
-
-      const options = {
-        method: 'GET',
-        headers: {
-          'X-RapidAPI-Key': 'f493fe7876mshae27ca187538c05p15120fjsn862d1a7fb728',
-          'X-RapidAPI-Host': 'youtube-mp36.p.rapidapi.com'
-        }
-      };
-
-      try {
-        const response = await fetch(apiUrl, options);
-        const data = await response.json();
-        document.getElementById('result').innerHTML =
-          `<a href="${data.link}" target="_blank">Download ${format.toUpperCase()}</a>`;
-      } catch (err) {
-        console.error(err);
-        document.getElementById('result').innerHTML = "Error converting video.";
-      }
-    }
-
     function extractID(url) {
       const match = url.match(/v=([^&]+)/);
       return match ? match[1] : '';
+    }
+
+    async function convert() {
+      const url = document.getElementById('yt-url').value;
+      const format = document.getElementById('format').value;
+      const videoId = extractID(url);
+      const apiUrl = `https://yt2down.taga.workers.dev/?id=${videoId}`; // <-- Ganti ini
+
+      document.getElementById('result').innerHTML = "Converting...";
+
+      try {
+        const res = await fetch(apiUrl);
+        const data = await res.json();
+
+        if (data.link) {
+          document.getElementById('result').innerHTML =
+            `<a href="${data.link}" target="_blank">Download ${format.toUpperCase()}</a>`;
+        } else {
+          document.getElementById('result').innerHTML = "Gagal mendapatkan link.";
+          console.log("API response:", data);
+        }
+      } catch (error) {
+        document.getElementById('result').innerHTML = "Terjadi error saat menghubungi API.";
+        console.error(error);
+      }
     }
   </script>
 </body>
