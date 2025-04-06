@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>YouTube to MP3/MP4</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; margin-top: 50px; }
+    input, select, button { padding: 10px; margin: 10px; width: 300px; }
+  </style>
+</head>
+<body>
+  <h1>YT to MP3 / MP4 Converter</h1>
+  <input type="text" id="yt-url" placeholder="Paste YouTube URL here" />
+  <select id="format">
+    <option value="mp3">MP3 (Audio)</option>
+    <option value="mp4">MP4 (Video)</option>
+  </select>
+  <br />
+  <button onclick="convert()">Convert</button>
+  <div id="result" style="margin-top:20px;"></div>
+
+  <script>
+    async function convert() {
+      const url = document.getElementById('yt-url').value;
+      const format = document.getElementById('format').value;
+      const apiUrl = `https://youtube-mp36.p.rapidapi.com/dl?id=${extractID(url)}`;
+
+      document.getElementById('result').innerHTML = "Converting...";
+
+      const options = {
+        method: 'GET',
+        headers: {
+          'X-RapidAPI-Key': 'YOUR_API_KEY',
+          'X-RapidAPI-Host': 'youtube-mp36.p.rapidapi.com'
+        }
+      };
+
+      try {
+        const response = await fetch(apiUrl, options);
+        const data = await response.json();
+        document.getElementById('result').innerHTML =
+          `<a href="${data.link}" target="_blank">Download ${format.toUpperCase()}</a>`;
+      } catch (err) {
+        console.error(err);
+        document.getElementById('result').innerHTML = "Error converting video.";
+      }
+    }
+
+    function extractID(url) {
+      const match = url.match(/v=([^&]+)/);
+      return match ? match[1] : '';
+    }
+  </script>
+</body>
+</html>
