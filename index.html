@@ -26,8 +26,28 @@
 
   <script>
     function extractID(url) {
-      const match = url.match(/v=([^&]+)/);
-      return match ? match[1] : '';
+  let videoId = '';
+
+  try {
+    const ytUrl = new URL(url);
+
+    // Bentuk watch?v=
+    if (ytUrl.searchParams.get('v')) {
+      videoId = ytUrl.searchParams.get('v');
+    }
+    // Bentuk youtu.be/ID
+    else if (ytUrl.hostname.includes('youtu.be')) {
+      videoId = ytUrl.pathname.slice(1);
+    }
+    // Bentuk /shorts/ID
+    else if (ytUrl.pathname.startsWith('/shorts/')) {
+      videoId = ytUrl.pathname.split('/')[2];
+    }
+  } catch (e) {
+    console.log("URL tidak valid:", url);
+  }
+
+  return videoId;
     }
 
     async function convert() {
