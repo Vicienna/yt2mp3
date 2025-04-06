@@ -64,7 +64,7 @@
 
         if (data.status === "ok" && data.link) {
           document.getElementById('result').innerHTML =
-            `<a href="${data.link}" target="_blank">Download MP3</a>`;
+            `<p>Download: <a href="${data.link}" target="_blank">${data.title}</a></p>`;
         } else {
           document.getElementById('result').innerHTML = "Gagal mendapatkan link.";
           console.log("Full API response:", data);
