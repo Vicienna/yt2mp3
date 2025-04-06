@@ -17,12 +17,9 @@
   </style>
 </head>
 <body>
-  <h1>YouTube to MP3 / MP4</h1>
+  <h1>YouTube to MP3</h1>
   <input type="text" id="yt-url" placeholder="Paste YouTube URL here" />
-  <select id="format">
-    <option value="mp3">MP3 (Audio)</option>
-    <option value="mp4">MP4 (Video)</option>
-  </select>
+  <!-- Hapus pilihan format karena API hanya dukung MP3 -->
   <br />
   <button onclick="convert()">Convert</button>
   <div id="result" style="margin-top: 20px;"></div>
@@ -35,7 +32,6 @@
 
     async function convert() {
       const url = document.getElementById('yt-url').value;
-      const format = document.getElementById('format').value;
       const videoId = extractID(url);
       const apiUrl = `https://yt2down.taga.workers.dev/?id=${videoId}`;
 
@@ -44,13 +40,14 @@
       try {
         const res = await fetch(apiUrl);
         const data = await res.json();
+        console.log("API response:", data); // Untuk debug
 
-        if (data.link) {
+        if (data.status === "ok" && data.link) {
           document.getElementById('result').innerHTML =
-            `<a href="${data.link}" target="_blank">Download ${format.toUpperCase()}</a>`;
+            `<a href="${data.link}" target="_blank">Download MP3</a>`;
         } else {
           document.getElementById('result').innerHTML = "Gagal mendapatkan link.";
-          console.log("API response:", data);
+          console.log("Full API response:", data);
         }
       } catch (error) {
         document.getElementById('result').innerHTML = "Terjadi error saat menghubungi API.";
