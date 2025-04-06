@@ -17,7 +17,7 @@
   </style>
 </head>
 <body>
-  <h1>YouTube to MP3</h1>
+  <h1>YouTube to MP3.</h1>
   <input type="text" id="yt-url" placeholder="Paste YouTube URL here" />
   <!-- Hapus pilihan format karena API hanya dukung MP3 -->
   <br />
@@ -26,10 +26,9 @@
 
   <script>
     function extractID(url) {
-  let videoId = '';
-
   try {
     const ytUrl = new URL(url);
+    let videoId = '';
 
     // Bentuk watch?v=
     if (ytUrl.searchParams.get('v')) {
@@ -43,12 +42,13 @@
     else if (ytUrl.pathname.startsWith('/shorts/')) {
       videoId = ytUrl.pathname.split('/')[2];
     }
+
+    return videoId;
   } catch (e) {
     console.log("URL tidak valid:", url);
+    return '';
   }
-
-  return videoId;
-    }
+      }
 
     async function convert() {
       const url = document.getElementById('yt-url').value;
@@ -66,7 +66,7 @@
           document.getElementById('result').innerHTML =
             `<a href="${data.link}" target="_blank">Download MP3</a>`;
         } else {
-          document.getElementById('result').innerHTML = "Gagal mendapatkan link.";
+          document.getElementById('result').innerHTML = "Gagal mendapatkan link. ${videoId}";
           console.log("Full API response:", data);
         }
       } catch (error) {
